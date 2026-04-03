@@ -21,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-endpoint = "http://localhost:8502/../models/1"
+endpoint = "http://localhost:8502/../models/10"
 
 CLASS_NAMES =  ['Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy']
 
