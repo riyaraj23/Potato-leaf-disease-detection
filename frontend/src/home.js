@@ -162,10 +162,11 @@ export const ImageUpload = () => {
       let formData = new FormData();
       formData.append("file", selectedFile);
       let res = await axios({
-        method: "post",
-         url: process.env.REACT_APP_API_URL + "/predict",
-        data: formData,
-      });
+  method: "post",
+  url: process.env.REACT_APP_API_URL + "/predict",
+  data: formData,
+  timeout: 120000,  // wait 2 minutes for response
+});
       if (res.status === 200) {
         setData(res.data);
       }
