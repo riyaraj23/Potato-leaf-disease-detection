@@ -1,6 +1,5 @@
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, UploadFile, File 
 import uvicorn
 import numpy as np
 from io import BytesIO
