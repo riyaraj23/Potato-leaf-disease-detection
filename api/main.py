@@ -1,4 +1,5 @@
 
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
@@ -6,6 +7,7 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
+import os
 
 app = FastAPI()
 
@@ -17,9 +19,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL = tf.keras.models.load_model("../models/10")
-
+MODEL = None
 CLASS_NAMES = ['Potato___Early_blight', 'Potato___Late_blight', 'Potato___healthy']
+
+def get_model():
+    global MODEL
+    if MODEL is None:
+        MODEL = tf.keras.models.load_model("../models/10")
+    return MODEL
 
 @app.get("/ping")
 async def ping():
@@ -30,12 +37,11 @@ def read_file_as_image(data) -> np.ndarray:
     return image
 
 @app.post("/predict")
-async def predict(
-        file: UploadFile = File(...)
-):
+async def predict(file: UploadFile = File(...)):
+    model = get_model()
     image = read_file_as_image(await file.read())
     img_batch = np.expand_dims(image, 0)
-    predictions = MODEL.predict(img_batch)
+    predictions = model.predict(img_batch)
     predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
     confidence = np.max(predictions[0])
     return {
